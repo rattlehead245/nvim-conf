@@ -44,6 +44,22 @@ P.S. You can delete this when you're done too. It's your config now :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+local wsl_env = os.getenv('WSL_DISTRO_NAME') ~= nil
+if wsl_env then
+  vim.g.clipboard = {
+    name = 'WslClipboard',
+    copy = {
+      ['+'] = 'clip.exe',
+      ['*'] = 'clip.exe',
+    },
+    paste = {
+      ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    },
+    cache_enabled = 0,
+  }
+end
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -332,6 +348,19 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 
 -- Clear highlights on escape
 vim.keymap.set('n', '<Esc>', '<cmd> noh <CR>', { desc = 'Clear highlights' })
+
+-- Yank current buffer file path
+vim.keymap.set('n', '<leader>yfp', function()
+  local current_file_path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':p')
+  local tmp_buffer = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(tmp_buffer, 0, 0, true, { current_file_path })
+  vim.api.nvim_buf_call(tmp_buffer, function()
+    vim.cmd('normal! "+yy')
+  end)
+end, { desc = 'Yank current buffer file path to clipboard' })
+
+-- Yank selected text into system clipboard
+vim.keymap.set('v', '<leader>y', '"+y', { desc = 'Yank selected text into system clipboard' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
