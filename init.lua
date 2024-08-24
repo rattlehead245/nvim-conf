@@ -138,7 +138,7 @@ require('lazy').setup({
       signs = {
         add = { text = '+' },
         change = { text = '~' },
-        delete = { text = '_' },
+        delete = { text = '󰍵' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
@@ -275,6 +275,22 @@ require('lazy').setup({
     'nvim-treesitter/playground',
   },
 
+  {
+    'rmagatti/auto-session',
+    config = function()
+      require('auto-session').setup( {
+      })
+    end,
+  },
+
+  {
+    'github/copilot.vim',
+    config = function()
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_assume_mapped = true
+    end
+  },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -353,6 +369,17 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- Clear highlights on escape
 vim.keymap.set('n', '<Esc>', '<cmd> noh <CR>', { desc = 'Clear highlights' })
 
+-- Center on find next/prev
+vim.keymap.set('n', 'n', 'nzz', { desc = 'Find next and center' })
+vim.keymap.set('n', 'N', 'Nzz', { desc = 'Find prev and center' })
+
+-- Next/prev tab
+vim.keymap.set('n', ']t', '<cmd>tabn <CR>', { desc = 'Go to next tab' })
+vim.keymap.set('n', '[t', '<cmd>tabp <CR>', { desc = 'Go to prev tab' })
+
+-- Copilot accept suggestion
+vim.keymap.set('i', '<A-;>', 'copilot#Accept()', { expr = true, replace_keycodes = false, desc = 'Accept copilot suggestion' })
+
 -- Yank current buffer file path
 vim.keymap.set('n', '<leader>yfp', function()
   local current_file_path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':p')
@@ -375,6 +402,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
   group = highlight_group,
   pattern = '*',
+})
+
+-- Resize panes when resizing window
+vim.api.nvim_create_autocmd('VimResized', {
+  pattern = '*',
+  command = 'tabdo wincmd =',
 })
 
 -- [[ Configure Telescope ]]
@@ -446,6 +479,14 @@ local function telescope_live_grep_open_files()
     prompt_title = 'Live Grep in Open Files',
   }
 end
+
+local function telescope_live_grep_all_files()
+  require('telescope.builtin').live_grep {
+    { vimgrep_arguments = { 'rg', '--hidden', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' }
+    }
+  }
+end
+
 vim.keymap.set('n', '<leader>s/', telescope_live_grep_open_files, { desc = '[S]earch [/] in Open Files' })
 vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc = '[S]earch [S]elect Telescope' })
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
@@ -453,6 +494,7 @@ vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { des
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+vim.keymap.set('n', '<leader>saf', telescope_live_grep_all_files, { desc = '[S]earch by grep [A]ll [F]iles' })
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
@@ -463,7 +505,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'markdown' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
@@ -667,7 +709,7 @@ cmp.setup {
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
-    ['<CR>'] = cmp.mapping.confirm {
+    ['<C-y>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
