@@ -211,8 +211,15 @@ require('lazy').setup({
     'navarasu/onedark.nvim',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'onedark'
+      -- vim.cmd.colorscheme 'onedark'
     end,
+  },
+
+  {
+    "EdenEast/nightfox.nvim",
+    config = function()
+      vim.cmd.colorscheme('duskfox')
+    end
   },
 
   {
@@ -222,7 +229,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        theme = 'nightfox',
         component_separators = '|',
         section_separators = '',
       },
@@ -751,7 +758,7 @@ local function configure_onedark()
   require('onedark').load()
 end
 
-configure_onedark()
+-- configure_onedark()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
