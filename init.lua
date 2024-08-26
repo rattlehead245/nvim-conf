@@ -307,6 +307,9 @@ require('lazy').setup({
     'sindrets/diffview.nvim',
   },
 
+  -- Useful for getting pretty icons, but requires a Nerd Font.
+  { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -401,6 +404,10 @@ vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to window on the left' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to window on the right' })
 vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to window below' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to window above' })
+
+-- Diffview
+vim.keymap.set('n', '<leader>gd', '<cmd>DiffviewOpen<CR>', { desc = 'Open diffview' })
+vim.keymap.set('n', '<leader>gh', '<cmd>DiffviewFileHistory<CR>', { desc = 'Open diffview file history' })
 
 -- Yank current buffer file path
 vim.keymap.set('n', '<leader>yfp', function()
