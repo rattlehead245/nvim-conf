@@ -232,6 +232,7 @@ require('lazy').setup({
         theme = 'nightfox',
         component_separators = '|',
         section_separators = '',
+        globalstatus = true,
       },
     },
   },
@@ -394,6 +395,12 @@ vim.keymap.set('n', '[t', '<cmd>tabp <CR>', { desc = 'Go to prev tab' })
 
 -- Copilot accept suggestion
 vim.keymap.set('i', '<A-;>', 'copilot#Accept()', { expr = true, replace_keycodes = false, desc = 'Accept copilot suggestion' })
+
+-- Window movement
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to window on the left' })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to window on the right' })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to window below' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to window above' })
 
 -- Yank current buffer file path
 vim.keymap.set('n', '<leader>yfp', function()
@@ -612,7 +619,7 @@ local on_attach = function(_, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  -- nmap('<C-K>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
