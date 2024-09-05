@@ -762,6 +762,8 @@ cmp.setup {
   },
 }
 
+require('custom.sugar')
+
 local function configure_onedark()
   local c = require('onedark.colors')
 
