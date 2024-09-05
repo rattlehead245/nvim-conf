@@ -405,20 +405,6 @@ vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to window on the right' })
 vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to window below' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to window above' })
 
--- Diffview
-vim.keymap.set('n', '<leader>gd', '<cmd>DiffviewOpen<CR>', { desc = 'Open diffview' })
-vim.keymap.set('n', '<leader>gh', '<cmd>DiffviewFileHistory<CR>', { desc = 'Open diffview file history' })
-
--- Yank current buffer file path
-vim.keymap.set('n', '<leader>yfp', function()
-  local current_file_path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':p')
-  local tmp_buffer = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(tmp_buffer, 0, 0, true, { current_file_path })
-  vim.api.nvim_buf_call(tmp_buffer, function()
-    vim.cmd('normal! "+yy')
-  end)
-end, { desc = 'Yank current buffer file path to clipboard' })
-
 -- Yank selected text into system clipboard
 vim.keymap.set('v', '<leader>y', '"+y', { desc = 'Yank selected text into system clipboard' })
 
