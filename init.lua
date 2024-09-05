@@ -405,6 +405,9 @@ vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to window on the right' })
 vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to window below' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to window above' })
 
+vim.keymap.set('n', '[q', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix item' })
+vim.keymap.set('n', ']q', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix item' })
+
 -- Yank selected text into system clipboard
 vim.keymap.set('v', '<leader>y', '"+y', { desc = 'Yank selected text into system clipboard' })
 
