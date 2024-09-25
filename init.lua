@@ -658,7 +658,7 @@ require('mason-lspconfig').setup()
 --  define the property 'filetypes' to the map in question.
 local servers = {
   clangd = { filetypes = { 'cpp', 'c', 'cc' } },
-  -- gopls = {},
+  gopls = {},
   pyright = {},
   rust_analyzer = {},
   -- tsserver = {},
