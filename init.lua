@@ -428,6 +428,36 @@ vim.api.nvim_create_autocmd('VimResized', {
   command = 'tabdo wincmd =',
 })
 
+
+function custom_find_files(opts, hidden)
+  opts = opts or {}
+  hidden = hidden or false
+
+  local function toggle_hidden_files(prompt_bufnr)
+    local action_state = require('telescope.actions.state')
+    local line = action_state.get_current_line()
+
+    require('telescope.actions').close(prompt_bufnr)
+
+    hidden = not hidden
+    custom_find_files({ default_text = line }, hidden)
+  end
+
+  opts.attach_mappings = function(_, map)
+    map({'n', 'i'}, '<C-h>', toggle_hidden_files)
+    return true
+  end
+
+  if hidden then
+    opts.hidden = true
+    opts.prompt_title = "Find Files <INCLUDES HIDDEN>"
+    require('telescope.builtin').find_files(opts)
+  else
+    opts.prompt_title = "Find Files"
+    require('telescope.builtin').find_files(opts)
+  end
+end
+
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
@@ -508,7 +538,7 @@ end
 vim.keymap.set('n', '<leader>s/', telescope_live_grep_open_files, { desc = '[S]earch [/] in Open Files' })
 vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc = '[S]earch [S]elect Telescope' })
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>sf', custom_find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
