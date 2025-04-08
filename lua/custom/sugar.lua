@@ -63,12 +63,24 @@ vim.api.nvim_create_autocmd("BufEnter", {
 -- Toggle between dayfox and nightfox themes
 local dark_mode = true
 local function toggle_theme_dark_mode()
+  -- Default dark and light themes
+  local dark_theme = "nightfox"
+  local light_theme = "dayfox"
+
+  -- Need to update the lualine theme as well, so load up current config (to be modified)
+  local lualine_config = require("lualine").get_config()
+
   dark_mode = not dark_mode
   if dark_mode then
-    vim.cmd("colorscheme nightfox")
+    vim.cmd("colorscheme " .. dark_theme)
+    lualine_config.options.theme = dark_theme
   else
-    vim.cmd("colorscheme dayfox")
+    vim.cmd("colorscheme " .. light_theme)
+    lualine_config.options.theme = light_theme
   end
+
+  -- Update lualine with the updated config
+  require("lualine").setup(lualine_config)
 end
 
 vim.keymap.set('n', '<leader>tt', toggle_theme_dark_mode, { desc = 'Toggle theme dark mode' })
