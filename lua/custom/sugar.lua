@@ -59,3 +59,16 @@ end
 vim.api.nvim_create_autocmd("BufEnter", {
   callback = on_buffer_load,
 })
+
+-- Toggle between dayfox and nightfox themes
+local dark_mode = true
+local function toggle_theme_dark_mode()
+  dark_mode = not dark_mode
+  if dark_mode then
+    vim.cmd("colorscheme nightfox")
+  else
+    vim.cmd("colorscheme dayfox")
+  end
+end
+
+vim.keymap.set('n', '<leader>tt', toggle_theme_dark_mode, { desc = 'Toggle theme dark mode' })
