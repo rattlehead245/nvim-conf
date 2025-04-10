@@ -52,7 +52,31 @@ local function on_buffer_load(event)
   vim.keymap.set('n', '<leader>gd', '<cmd>DiffviewOpen<CR>', { desc = 'Open diffview' })
   vim.keymap.set('n', '<leader>gm', '<cmd>DiffviewOpen main...HEAD<CR>', { desc = 'Open diffview for main...HEAD' })
   vim.keymap.set('n', '<leader>gh', '<cmd>%DiffviewFileHistory<CR>', { desc = 'File history for the current file' })
-  vim.keymap.set('v', '<leader>gh', "<cmd>'<,'>DiffviewFileHistory<CR>", { desc = 'File history for the current selection' })
+  vim.keymap.set('v', '<leader>gh', "<cmd>'<,'>DiffviewFileHistory<CR>",
+    { desc = 'File history for the current selection' })
+  vim.keymap.set('n', '<leader>gc', function()
+    -- Open commit for the current line (blame commit) in diffview.
+    local file_name = vim.api.nvim_buf_get_name(0)
+    local line_number = vim.api.nvim_win_get_cursor(0)[1]
+    if line_number == nil or line_number == 0 then
+      return
+    end
+
+    -- Get the commit hash for the current line
+    local commit_hash_cmd = vim.system(
+      { 'git', 'blame', '-C', vim.fn.escape(file_name, ' '), '-L', line_number .. ',' .. line_number, '--porcelain' },
+      { cwd = git_root }):wait()
+
+    -- The commit hash is the first word of the output
+    local commit_hash = vim.fn.split(commit_hash_cmd.stdout, ' ')[1]
+    if commit_hash_cmd.code ~= 0 or commit_hash == nil or commit_hash == '' then
+      print("Error getting commit hash for line " .. line_number .. " in file " .. file_name)
+      print("Err: " .. commit_hash_cmd.stderr .. " " .. commit_hash_cmd.stdout)
+      return
+    end
+
+    vim.cmd(':DiffviewOpen ' .. commit_hash .. '^...' .. commit_hash)
+  end, { desc = 'Show the git blame commit for the current line' })
 end
 
 -- Register callback when a buffer is opened. Used to set keymaps that are buffer/env specific.
