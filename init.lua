@@ -249,8 +249,24 @@ require('lazy').setup({
     },
   },
 
-  -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      toggler = {
+        line = '<leader>tcc',
+        block = '<leader>tbc',
+      },
+      opleader = {
+        line = '<leader>tc',
+        block = '<leader>tbc',
+      },
+      extra = {
+        above = '<leader>tcO',
+        below = '<leader>tco',
+        eol = '<leader>tcA',
+      },
+    }
+  },
 
   -- Fuzzy Finder (files, lsp, etc)
   {
