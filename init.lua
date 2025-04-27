@@ -445,9 +445,23 @@ vim.api.nvim_create_autocmd('VimResized', {
 })
 
 
-function custom_find_files(opts, hidden)
+function custom_find_files(opts)
   opts = opts or {}
-  hidden = hidden or false
+  opts.hidden = opts.hidden or false
+  opts.no_ignore = opts.no_ignore or false
+
+  local function create_prompt_title(opts)
+    local title = 'Find Files'
+    if opts.hidden then
+      title = title .. ' <INCLUDES HIDDEN>'
+    end
+
+    if opts.no_ignore then
+      title = title .. ' <INCLUDES GITIGNORED>'
+    end
+
+    return title
+  end
 
   local function toggle_hidden_files(prompt_bufnr)
     local action_state = require('telescope.actions.state')
@@ -455,23 +469,31 @@ function custom_find_files(opts, hidden)
 
     require('telescope.actions').close(prompt_bufnr)
 
-    hidden = not hidden
-    custom_find_files({ default_text = line }, hidden)
+    opts.hidden = not opts.hidden
+    opts.default_text = line
+    opts.prompt_title = create_prompt_title(opts)
+    custom_find_files(opts)
+  end
+
+  local function toggle_gitignored_files(prompt_bufnr)
+    local action_state = require('telescope.actions.state')
+    local line = action_state.get_current_line()
+
+    require('telescope.actions').close(prompt_bufnr)
+
+    opts.no_ignore = not opts.no_ignore
+    opts.default_text = line
+    opts.prompt_title = create_prompt_title(opts)
+    custom_find_files(opts)
   end
 
   opts.attach_mappings = function(_, map)
     map({'n', 'i'}, '<C-h>', toggle_hidden_files)
+    map({'n', 'i'}, '<C-g>', toggle_gitignored_files)
     return true
   end
 
-  if hidden then
-    opts.hidden = true
-    opts.prompt_title = "Find Files <INCLUDES HIDDEN>"
-    require('telescope.builtin').find_files(opts)
-  else
-    opts.prompt_title = "Find Files"
-    require('telescope.builtin').find_files(opts)
-  end
+  require('telescope.builtin').find_files(opts)
 end
 
 -- [[ Configure Telescope ]]
