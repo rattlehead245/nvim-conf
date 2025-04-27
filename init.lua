@@ -100,7 +100,7 @@ require('lazy').setup({
     lazy = true,
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true },
+      { 'williamboman/mason.nvim', opts = {} },
       'williamboman/mason-lspconfig.nvim',
 
       -- Useful status updates for LSP
@@ -716,11 +716,6 @@ require('which-key').add {
   {'<leader>t', group = '[T]oggle' },
   {'<leader>w', group = '[W]orkspace' },
 }
-
--- mason-lspconfig requires that these setup functions are called in this order
--- before setting up the servers.
-require('mason').setup()
-require('mason-lspconfig').setup()
 
 -- Enable the following language servers
 --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
