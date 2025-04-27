@@ -28,6 +28,8 @@ return {
     "ldelossa/nvim-dap-projects",
   },
 
+  event = "VeryLazy",
+
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'

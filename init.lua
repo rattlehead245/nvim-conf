@@ -97,6 +97,7 @@ require('lazy').setup({
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+    lazy = true,
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
       { 'williamboman/mason.nvim', config = true },
@@ -114,6 +115,7 @@ require('lazy').setup({
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
+    event = "VeryLazy",
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
       'L3MON4D3/LuaSnip',
@@ -129,7 +131,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim', lazy = true, opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -209,7 +211,7 @@ require('lazy').setup({
   {
     -- Theme inspired by Atom
     'navarasu/onedark.nvim',
-    priority = 1000,
+    lazy = true,
     config = function()
       -- vim.cmd.colorscheme 'onedark'
     end,
@@ -217,6 +219,7 @@ require('lazy').setup({
 
   {
     "EdenEast/nightfox.nvim",
+    priority = 1000,
     config = function()
       vim.cmd.colorscheme('nightfox')
     end
@@ -243,6 +246,7 @@ require('lazy').setup({
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help ibl`
     main = 'ibl',
+    lazy = false,
     opts = {
       indent = { char = "|" },
       whitespace = { highlight = { "Whitespace", "NonText" } },
@@ -301,6 +305,7 @@ require('lazy').setup({
 
   {
     'nvim-treesitter/playground',
+    lazy = true,
   },
 
   {
