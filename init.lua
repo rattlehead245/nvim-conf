@@ -854,21 +854,7 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
-require('custom.sugar')
-
-local function configure_onedark()
-  local c = require('onedark.colors')
-
-  require('onedark').setup {
-    style = 'darker',
-    highlights = {
-      ["@comment"] = { fg = c.light_grey },
-    },
-  }
-  require('onedark').load()
-end
-
--- configure_onedark()
-
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+require('custom.sugar')
