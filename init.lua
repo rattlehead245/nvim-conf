@@ -578,6 +578,68 @@ function custom_find_files(opts)
   require('telescope.builtin').find_files(opts)
 end
 
+function custom_live_grep(opts)
+  opts = opts or {}
+  opts.hidden = opts.hidden or false
+  opts.no_ignore = opts.no_ignore or false
+
+  local function create_prompt_title(opts)
+    local title = 'Live Grep'
+    if opts.hidden then
+      title = title .. ' <INCLUDES HIDDEN>'
+    end
+
+    if opts.no_ignore then
+      title = title .. ' <INCLUDES GITIGNORED>'
+    end
+
+    return title
+  end
+
+  local function toggle_hidden_files(prompt_bufnr)
+    local action_state = require('telescope.actions.state')
+    local line = action_state.get_current_line()
+
+    require('telescope.actions').close(prompt_bufnr)
+
+    opts.hidden = not opts.hidden
+    opts.default_text = line
+    opts.prompt_title = create_prompt_title(opts)
+    custom_live_grep(opts)
+  end
+
+  local function toggle_gitignored_files(prompt_bufnr)
+    local action_state = require('telescope.actions.state')
+    local line = action_state.get_current_line()
+
+    require('telescope.actions').close(prompt_bufnr)
+
+    opts.no_ignore = not opts.no_ignore
+    opts.default_text = line
+    opts.prompt_title = create_prompt_title(opts)
+    custom_live_grep(opts)
+  end
+
+  opts.attach_mappings = function(_, map)
+    map({'n', 'i'}, '<C-h>', toggle_hidden_files)
+    map({'n', 'i'}, '<C-g>', toggle_gitignored_files)
+    return true
+  end
+
+  local rgrep_args = { 'rg', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' }
+
+  if opts.hidden then
+    table.insert(rgrep_args, '--hidden')
+  end
+  if opts.no_ignore then
+    table.insert(rgrep_args, '--no-ignore-vcs')
+  end
+
+  opts.vimgrep_arguments = rgrep_args
+
+  require('telescope.builtin').live_grep(opts)
+end
+
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
@@ -661,7 +723,7 @@ vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc
 vim.keymap.set('n', '<leader>sf', custom_find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+vim.keymap.set('n', '<leader>sg', custom_live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>saf', telescope_live_grep_all_files, { desc = '[S]earch by grep [A]ll [F]iles' })
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
