@@ -527,13 +527,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- Resize panes when resizing window
-vim.api.nvim_create_autocmd('VimResized', {
-  pattern = '*',
-  command = 'tabdo wincmd =',
-})
-
-
 function custom_find_files(opts)
   opts = opts or {}
   opts.hidden = opts.hidden or false
